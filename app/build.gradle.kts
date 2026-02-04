@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.2.21"
 }
 
 android {
@@ -43,17 +44,25 @@ android {
 
 dependencies {
 
+    // Runtime de Kotlin Serialization (JSON)
+    implementation(libs.kotlinx.serialization.json)
+
+    // Retrofit core
+    implementation(libs.retrofit)
+
+    // Converter oficial de Retrofit para kotlinx.serialization (NO Jake Wharton del Codelab que esta deprecated)
+    implementation(libs.converter.kotlinx.serialization)
+
+    // 2. Imágenes (Coil)
+    implementation(libs.coil.compose)
+
+    // 3. ViewModel & Lifecycle
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
     // ViewModel
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     // ViewModel utilities for Compose
     implementation(libs.androidx.lifecycle.viewmodel.compose)
-
-    // Retrofit & Gson
-    implementation(libs.retrofit)
-    implementation(libs.converter.gson)
-
-    // Coil para Compose
-    implementation(libs.coil.compose)
 
     // Material Icons (Opcional, para el desplegable)
     implementation(libs.androidx.compose.material.icons.extended)
