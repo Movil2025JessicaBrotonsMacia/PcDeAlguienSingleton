@@ -1,27 +1,36 @@
 package net.iessochoa.sergiocontreras.pcdealguien.data
 
+import kotlinx.serialization.json.Json
 import net.iessochoa.sergiocontreras.pcdealguien.network.GenerationDto
 import net.iessochoa.sergiocontreras.pcdealguien.network.PokemonApiService
 import net.iessochoa.sergiocontreras.pcdealguien.network.PokemonDto
+import okhttp3.MediaType.Companion.toMediaType
+import retrofit2.Retrofit
+import retrofit2.converter.kotlinx.serialization.asConverterFactory
 
 //TERCERO
 // Interfaz para facilitar testing (Best Practice)
-interface PokemonRepository{
-    suspend fun getPokemonsByGeneration(generation: Int): List<PokemonDto> //Devuelve lista de pokemons, se parece a PokemonApiService
-    suspend fun getGenerations(): List<GenerationDto> //Devuelve lista de generaciones
-}
-
-// Implementación concreta. Inyectamos el servicio, no lo creamos aquí
-class NetworkPokemonRepository(
-    private val apiService: PokemonApiService
-): PokemonRepository {
-    override suspend fun getPokemonsByGeneration(generation: Int): List<PokemonDto> {
-        return apiService.getPokemonsByGeneration(generation).pokemons
+object PokemonRepository{
+    private val baseUrl = "https://pokeapi.co/api/v2/"
+    private val retrofit: Retrofit by lazy {
+        Retrofit.Builder()
+            .addConverterFactory(Json {
+                ignoreUnknownKeys = true //Para ignorar cosas del json que no vamos a usar
+                coerceInputValues = true
+            }.asConverterFactory("application/json".toMediaType()))
+            .baseUrl(baseUrl)
+            .build()
     }
 
-    override suspend fun getGenerations(): List<GenerationDto> {
-        return apiService.getGenerations().generations
+    private val retrofitService: PokemonApiService by lazy {
+        retrofit.create(PokemonApiService::class.java)
     }
 
+    //Devuelve lista de pokemons según generación
+    suspend fun getPokemonsByGeneration(generation: Int) = retrofitService.getPokemonsByGeneration(generation)
+
+    //Devuelve lista de generaciones, esto lo uso para mostrarlo en el dropDown
+    suspend fun getGenerations() = retrofitService.getGenerations()
 
 }
+
