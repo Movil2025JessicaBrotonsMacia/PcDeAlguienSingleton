@@ -45,7 +45,7 @@ fun PokemonScreen(
     //val pokemonList = uiState.pokemonList
 
     // Variables para el Dropdown (UI ya resuelta)
-    var expanded by remember { mutableStateOf(false) }
+//    var expanded by remember { mutableStateOf(false) }
     //var selectedGen by remember { mutableStateOf(1) }
     //val generations = (1..8).toList() // 8 Generaciones
 
